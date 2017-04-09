@@ -13,7 +13,6 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     var businesses: [Business]!
     
     @IBOutlet weak var tableView: UITableView!
-
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,7 +68,6 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         return cell
     }
     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let navigationController = segue.destination as! UINavigationController
         let filtersViewController = navigationController.topViewController as! FiltersViewController
@@ -79,7 +77,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func filtersViewController(filterViewController: FiltersViewController, didUpdateFilters filters: [String : AnyObject]) {
         let categories = filters["categories"] as? [String]
-        Business.searchWithTerm(term: "Restaurant", sort: nil, categories: categories, deals: nil) {
+        Business.searchWithTerm(term: "Restaurants", sort: nil, categories: categories, deals: nil) {
             (businesses: [Business]?, error: Error?) -> Void in
             self.businesses = businesses
             self.tableView.reloadData()
