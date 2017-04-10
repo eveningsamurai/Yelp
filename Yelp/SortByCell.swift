@@ -9,7 +9,7 @@
 import UIKit
 
 @objc protocol SortByCellDelegate {
-    @objc optional func sortBySwitchCell(sortBySwitchCell: SortByCell, didChangeValue:Bool)
+    @objc optional func sortByCell(sortBySwitchCell: SortByCell, didChangeValue:Bool)
 }
 
 class SortByCell: UITableViewCell {
@@ -49,7 +49,7 @@ class SortByCell: UITableViewCell {
             isSelected = false
         }
         
-        sortByDelegate?.sortBySwitchCell?(sortBySwitchCell: self, didChangeValue: isSelected)
+        sortByDelegate?.sortByCell?(sortBySwitchCell: self, didChangeValue: isSelected)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

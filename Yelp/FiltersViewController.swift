@@ -32,6 +32,9 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     var distanceExpanded = false
     var distances:[String]!
     
+    //current filters
+    var currentFilters:(sortMode: String, sortRowIndex: Int, isDealON: Bool, distance: String, distanceRowIndex: Int)!
+    
     //setting up delegate for FiltersView
     weak var delegate: FiltersViewControllerDelegate?
     
@@ -46,6 +49,16 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         // Do any additional setup after loading the view.
         categories = yelpCategories()
 
+        if(currentFilters != nil){
+            distanceState.rowSelected = currentFilters.distanceRowIndex
+            distanceState.rowSelectedLabel = currentFilters.distance
+            
+            sortByState.rowSelectedLabel = currentFilters.sortMode
+            sortByState.rowSelected = currentFilters.sortRowIndex
+            
+            isDealOnState = [0: currentFilters.isDealON]
+        }
+        
         let dealNib = UINib(nibName: "DealCell", bundle: nil)
         tableView.register(dealNib, forCellReuseIdentifier: "DealCell")
         
@@ -229,21 +242,21 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         switchStates[indexPath.row] = value
     }
     
-    func dealSwitchCell(dealSwitchCell: DealCell, didChangeValue: Bool) {
+    func dealCell(dealSwitchCell: DealCell, didChangeValue: Bool) {
         let indexPath = tableView.indexPath(for: dealSwitchCell)!
         isDealOnState[indexPath.row] = didChangeValue
     }
     
-    func sortBySwitchCell(sortByCell: SortByCell, didChangeValue: Bool) {
-        if(didChangeValue){
+    func sortByCell(sortByCell: SortByCell, didChangeValue: Bool) {
+//        if(didChangeValue){
             let indexPath = tableView.indexPath(for: sortByCell)!
             sortByState = (rowSelected:indexPath.row,rowSelectedLabel: sortByOptions[indexPath.row])
             sortByExpanded = !sortByExpanded
             tableView.reloadSections(IndexSet(indexPath), with: UITableViewRowAnimation.fade)
-        }
+//        }
     }
     
-    func distanceSwitchCell(distanceCell: DistanceCell, didChangeValue: Bool) {
+    func distanceCell(distanceCell: DistanceCell, didChangeValue: Bool) {
         if(didChangeValue){
             let indexPath = tableView.indexPath(for: distanceCell)!
             distanceState = (rowSelected:indexPath.row,rowSelectedLabel: distances[indexPath.row])

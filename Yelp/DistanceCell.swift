@@ -9,7 +9,7 @@
 import UIKit
 
 @objc protocol DistanceCellDelegate {
-    @objc optional func distanceSwitchCell(distanceSwitchCell: DistanceCell, didChangeValue:Bool)
+    @objc optional func distanceCell(distanceSwitchCell: DistanceCell, didChangeValue:Bool)
 }
 
 class DistanceCell: UITableViewCell {
@@ -46,7 +46,7 @@ class DistanceCell: UITableViewCell {
             distanceButton.tintColor = UIColor.init(red: CGFloat(102)/255, green: CGFloat(102)/255, blue: (102)/255, alpha: 1)//gray
             isSelected = false
         }
-        distanceDelegate?.distanceSwitchCell?(distanceSwitchCell: self, didChangeValue: isSelected)
+        distanceDelegate?.distanceCell?(distanceSwitchCell: self, didChangeValue: isSelected)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

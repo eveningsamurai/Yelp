@@ -12,6 +12,7 @@ import MBProgressHUD
 class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FiltersViewControllerDelegate {
     
     var businesses: [Business]!
+    var distancesInMeters:[Double]!
     var currentFilters = (
         sortMode: "Best Match",
         sortRowIndex:0,
@@ -24,6 +25,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
@@ -44,23 +46,6 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
             
             }
         )
-        
-        /* Example of Yelp search with more search options specified
-         Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
-         self.businesses = businesses
-         
-         for business in businesses {
-         print(business.name!)
-         print(business.address!)
-         }
-         }
-         */
-        
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -91,6 +76,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         
         let dealsOn = filters["dealsOn"] as? Bool
         
+        let sortByRowIndex = filters["sortByRowIndex"] as? Int
         let sortyBy = filters["sortBy"] as? String
         
         var sortByMode = YelpSortMode.bestMatched
@@ -105,8 +91,16 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         
         let distanceRow = filters["distanceRowIndex"] as? Int
+        let distance = filters["distance"] as? String
         let distancesInMeters = [0, 0.3 * 1609.34, 1609.34, 5 * 1609.34 , 20 * 1609.34]
 
+        //update filters used to pass it to filter view
+        currentFilters.sortMode = sortyBy!
+        currentFilters.sortRowIndex = sortByRowIndex!
+        currentFilters.distanceRowIndex = distanceRow!
+        currentFilters.distance = distance!
+        currentFilters.isDealON = dealsOn!
+        
         Business.searchWithTerm(term: "Restaurants", distance: distancesInMeters[distanceRow!], sort: sortByMode, categories: categories, deals: dealsOn) {
             (businesses: [Business]?, error: Error?) -> Void in
             self.businesses = businesses
