@@ -9,10 +9,15 @@
 import UIKit
 import MBProgressHUD
 
-class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FiltersViewControllerDelegate {
+class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FiltersViewControllerDelegate, UISearchBarDelegate {
     
     var businesses: [Business]!
+    var filteredBusinesses: [Business]!
     var distancesInMeters:[Double]!
+    
+    var searchBar = UISearchBar()
+    var searchActive = false
+    
     var currentFilters = (
         sortMode: "Best Match",
         sortRowIndex:0,
@@ -30,6 +35,11 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 120
+        searchBar.delegate = self
+        
+        // add searchbar to top navigation bar
+        searchBar.placeholder = "Restaurant name..."
+        navigationItem.titleView = self.searchBar
         
         MBProgressHUD.showAdded(to: self.view, animated: true)
         Business.searchWithTerm(term: "Thai", completion: { (businesses: [Business]?, error: Error?) -> Void in
@@ -48,8 +58,48 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         )
     }
     
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchActive = true;
+    }
+    
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        searchActive = false;
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchActive = false;
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchActive = false;
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        // populate businessesFiltered array based on business names
+        filteredBusinesses = businesses?.filter({ (business) -> Bool in
+            let businessName = business.name
+            print(businessName!)
+            let range = businessName?.lowercased().range(of: searchText.lowercased(), options: .regularExpression)
+            
+            return range != nil
+        })
+
+        if(filteredBusinesses!.count == 0){
+            searchActive = false;
+        } else {
+            searchActive = true;
+        }
+        
+        self.tableView.reloadData()
+    }
+
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if businesses != nil {
+        if searchActive {
+            return filteredBusinesses.count
+        }
+        else if businesses != nil {
             return businesses.count
         } else {
             return 0
@@ -58,7 +108,11 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "BusinessCell") as! BusinessCell
-        cell.business = businesses[indexPath.row]
+        if searchActive {
+            cell.business = filteredBusinesses[indexPath.row]
+        } else {
+            cell.business = businesses[indexPath.row]
+        }
         
         return cell
     }
