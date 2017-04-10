@@ -38,7 +38,7 @@ The following **optional** features are implemented:
 
 Walkthrough: General                         |  
 :-------------------------------------------:|
-![Video Walkthrough](yelp_animation1.gif)  |
+![Video Walkthrough](yelp_animations1.gif)  |
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/)
 
